@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  push:
+    branches: 
+      - dev
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v3
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Instalar dependências do backend
+        run: |
+          cd backend
+          npm install
+
+      - name: Instalar dependências do frontend (se houver)
+        run: |
+          cd frontend
+          if [ -f package.json ]; then npm install; fi
+
+      - name: Testar build do Docker Compose
+        run: docker compose up --build -d
